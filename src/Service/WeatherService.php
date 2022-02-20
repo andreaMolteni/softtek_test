@@ -25,52 +25,47 @@ class WeatherService
         $client = HttpClient::create();
         $response = $client->request('GET', $urlRequest);
 
-        // return self::manageResponse($response);
-        $content = $response->toArray();
-
-        $response = [
-            "today" => $content['forecast']['forecastday'][0]['day']['condition']['text'],
-            "tomorrow" => $content['forecast']['forecastday'][1]['day']['condition']['text'],
-        ];
-
-        return $response;
+        return self::manageResponse($response);
     }
 
-    // /**
-    //  * 
-    //  */
-    // private function manageResponse(object $response = null): array
-    // {
-    //     if($response->getStatusCode() === 200){
-    //             $content = $response->toArray();
+    /**
+     * 
+     */
+    private function manageResponse(object $response = null): array
+    {
+        if($response->getStatusCode() === 200){
+                $content = $response->toArray();
 
-    //             $weather = [
-    //                 "today" => self::getWeather($content, 'today'),
-    //                 "tomorrow" => self::getWeather($content, 'tomorrow')
-    //             ];
+                $weather = [
+                    "today" => self::getWeatherText($content, 'today'),
+                    "tomorrow" => self::getWeatherText($content, 'tomorrow')
+                ];
             
-    //     } else {
-    //         $weather = [
-    //             "today" => 'not available',
-    //             "tomorrow" => 'not available',
-    //         ];
-    //     }
-    //      return $weather;
-    // }
+        } else {
+            $weather = [
+                "today" => 'not available',
+                "tomorrow" => 'not available',
+            ];
+        }
+         return $weather;
+    }
 
-    // /**
-    //  * 
-    //  */
-    // private function getWeather(array $content = [], string $when): string
-    // {
-    //     $weather = 'not available';
-    //     if($when === 'today'){
-    //             $weather = !empty($content['forecast']['forecastday'][0]['day']['condition']['text']) ? $content['forecast']['forecastday'][0]['day']['condition']['text']  : 'not available',
-    //     } else {
-    //         $weather = !empty($content['forecast']['forecastday'][1]['day']['condition']['text']) ? $content['forecast']['forecastday'][1]['day']['condition']['text']  : 'not available',
-    //     }
-    //      return $weather;
-    // }
+    /**
+     * 
+     */
+    private function getWeatherText(array $content = [], string $when): string
+    {
+        $weather = 'not available';
+        if(count($content['forecast']['forecastday']) === 2){
+            if($when === 'today'){
+                $weather = !empty($content['forecast']['forecastday'][0]['day']['condition']['text']) ? $content['forecast']['forecastday'][0]['day']['condition']['text']  : 'not available';
+            } else {
+                $weather = !empty($content['forecast']['forecastday'][1]['day']['condition']['text']) ? $content['forecast']['forecastday'][1]['day']['condition']['text']  : 'not available';
+            }
+            return $weather;
+        } 
+        
+    }
 }
 
 ?>
