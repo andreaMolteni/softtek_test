@@ -36,8 +36,9 @@ class GetCitiesWeather extends Command
         }
 
         array_map(function($element) use ($output){
+            $weather = WeatherService::getWeather($element['lat'], $element['lon'], 2);
             $output->writeln([
-                'Processed city ' . $element['name'],
+                'Processed city ' . $element['name'] . ' | ' . $weather['today'] . ' - ' . $weather['tomorrow'],
             ]);
         }, $citiesList );
         
