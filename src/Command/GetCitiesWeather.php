@@ -13,6 +13,16 @@ class GetCitiesWeather extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:get-cities-wheather';
+    private $musementService;
+    private $weatherService;
+
+    public function __construct(MusementService $MusementService, WeatherService $weatherService)
+    {
+        $this->musementService = $MusementService;
+        $this->weatherService = $weatherService;
+
+        parent::__construct();
+    }
 
     protected function configure(): void
     {
@@ -21,11 +31,7 @@ class GetCitiesWeather extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // ... put here the code to create the user
-
-        // this method must return an integer number with the "exit status code"
-        // of the command. You can also use these constants to make code more readable
-        $response = MusementService::getCities();
+        $response = $this->musementService->getCities();
         if($response['statusCode'] !== 200){
             $output->writeln([
                 $response['message'],
@@ -36,7 +42,7 @@ class GetCitiesWeather extends Command
         }
 
         array_map(function($element) use ($output){
-            $weather = WeatherService::getWeather($element['lat'], $element['lon'], 2);
+            $weather = $this->weatherService->getWeather($element['lat'], $element['lon'], 2);
             $output->writeln([
                 'Processed city ' . $element['name'] . ' | ' . $weather['today'] . ' - ' . $weather['tomorrow'],
             ]);

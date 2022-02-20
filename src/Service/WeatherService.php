@@ -10,10 +10,17 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 class WeatherService
 {
 
-    static function getWeather($lat, $lon, $days){
+    private $params;
+
+    public function __construct(ContainerBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
+    function getWeather($lat, $lon, $days){
         // define url
-        $apiKey = '097c03a6f4de4a0780a102038222002';
-        $apiBaseUrl = 'http://api.weatherapi.com/v1/forecast.json';
+        $apiKey = $this->params->get('app.api_weather_key');
+        $apiBaseUrl = $this->params->get('app.api_weather_url');
 
         $queryFields = [
             'q' => number_format($lat,3,'.','') . ',' . number_format($lon,3,'.',''),
@@ -51,7 +58,8 @@ class WeatherService
     }
 
     /**
-     * 
+     * @param array $content - api weather response payload
+     * @param string @when - {'today'|'tomorrow'} 
      */
     private function getWeatherText(array $content = [], string $when): string
     {

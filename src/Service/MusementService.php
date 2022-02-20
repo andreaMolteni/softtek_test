@@ -3,18 +3,27 @@
 namespace App\Service;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class MusementService
 {
+
+    private $params;
+
+    public function __construct(ContainerBagInterface $params)
+    {
+        $this->params = $params;
+    }
 
     /**
      * It returns an array response from musement api containing status code, message and cities list 
      * @return array  
      */
-    static function getCities(): array
+    function getCities(): array
     {
+        $url = $this->params->get('app.api_musement_url');
         $client = HttpClient::create();
-        $response = $client->request('GET', 'https://api.musement.com/api/v3/cities/',[
+        $response = $client->request('GET', $url,[
             'headers' => [
                 'Accept' => 'application/json',
                 'Accept-Language' => 'en-US'
