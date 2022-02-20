@@ -25,9 +25,21 @@ class GetCitiesWeather extends Command
 
         // this method must return an integer number with the "exit status code"
         // of the command. You can also use these constants to make code more readable
-        $output->writeln([
-            'First run test',
-        ]);
+        $response = MusementService::getCities();
+        if($response['statusCode'] !== 200){
+            $output->writeln([
+                $response['message'],
+            ]);
+            return Command::FAILURE;
+        } else {
+            $citiesList = $response['citiesList'];
+        }
+
+        array_map(function($element) use ($output){
+            $output->writeln([
+                'Processed city ' . $element['name'],
+            ]);
+        }, $citiesList );
         
         // return this if there was no problem running the command
         // (it's equivalent to returning int(0))
