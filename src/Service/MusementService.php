@@ -9,10 +9,12 @@ class MusementService
 {
 
     private $params;
+    public $url;
 
     public function __construct(ContainerBagInterface $params)
     {
         $this->params = $params;
+        $this->url = $this->params->get('app.api_musement_url');;
     }
 
     /**
@@ -21,9 +23,8 @@ class MusementService
      */
     function getCities(): array
     {
-        $url = $this->params->get('app.api_musement_url');
         $client = HttpClient::create();
-        $response = $client->request('GET', $url,[
+        $response = $client->request('GET', $this->url,[
             'headers' => [
                 'Accept' => 'application/json',
                 'Accept-Language' => 'en-US'
@@ -47,8 +48,8 @@ class MusementService
                 $citiesList = array_map(function($element){
                     return [
                         "name" => !empty($element['name']) ? $element['name'] : '',
-                        "lat" => !empty($element['latitude']) ? $element['latitude'] : -1,
-                        "lon" => !empty($element['longitude']) ? $element['longitude'] : -1,
+                        "lat" => !empty($element['latitude']) ? $element['latitude'] : null,
+                        "lon" => !empty($element['longitude']) ? $element['longitude'] : null,
                     ];
                 }, $content);
                 return [

@@ -17,14 +17,17 @@ class WeatherService
         $this->params = $params;
     }
 
-    function getWeather($lat, $lon, $days){
+    function getWeather($lat = null, $lon = null, $days = 2){
+        if($lat === null || $lon === null){
+            $this->manageResponse();
+        }
         // define url
         $apiKey = $this->params->get('app.api_weather_key');
         $apiBaseUrl = $this->params->get('app.api_weather_url');
 
         $queryFields = [
             'q' => number_format($lat,3,'.','') . ',' . number_format($lon,3,'.',''),
-            'key' => $apiKey, // define api key
+            'key' => $apiKey,
             'days' => $days
         ];
         $urlRequest = $apiBaseUrl . '?' . http_build_query($queryFields);
@@ -32,7 +35,7 @@ class WeatherService
         $client = HttpClient::create();
         $response = $client->request('GET', $urlRequest);
 
-        return self::manageResponse($response);
+        return $this->manageResponse($response);
     }
 
     /**
@@ -40,21 +43,20 @@ class WeatherService
      */
     private function manageResponse(object $response = null): array
     {
-        if($response->getStatusCode() === 200){
-                $content = $response->toArray();
+        if($response === null || $response->getStatusCode() !== 200){
+            $weather = [
+                "today" => 'not available',
+                "tomorrow" => 'not available',
+            ];
+        } else {
+            $content = $response->toArray();
 
                 $weather = [
                     "today" => self::getWeatherText($content, 'today'),
                     "tomorrow" => self::getWeatherText($content, 'tomorrow')
                 ];
-            
-        } else {
-            $weather = [
-                "today" => 'not available',
-                "tomorrow" => 'not available',
-            ];
         }
-         return $weather;
+        return $weather;
     }
 
     /**

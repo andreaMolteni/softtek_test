@@ -32,7 +32,7 @@ class GetCitiesWeather extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $response = $this->musementService->getCities();
-        if($response['statusCode'] !== 200){
+        if(!empty($response['statusCode']) && $response['statusCode'] !== 200){
             $output->writeln([
                 $response['message'],
             ]);
