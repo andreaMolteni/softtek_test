@@ -42,7 +42,7 @@ class GetCitiesWeather extends Command
         }
 
         array_map(function($element) use ($output){
-            $weather = $this->weatherService->getWeather($element['lat'], $element['lon'], 2);
+            $weather = $this->weatherService->getWeather((float)$element['lat'], (float)$element['lon'], 2);
             $output->writeln([
                 'Processed city ' . $element['name'] . ' | ' . $weather['today'] . ' - ' . $weather['tomorrow'],
             ]);

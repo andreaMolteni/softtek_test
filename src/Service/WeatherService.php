@@ -5,56 +5,56 @@ namespace App\Service;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBag;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
-
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class WeatherService
 {
 
     private $params;
+    public $apiKey;
+    public $apiBaseUrl;
 
     public function __construct(ContainerBagInterface $params)
     {
         $this->params = $params;
+        $this->apiKey = $this->params->get('app.api_weather_key');
+        $this->apiBaseUrl = $this->params->get('app.api_weather_url');
     }
 
-    function getWeather($lat = null, $lon = null, $days = 2){
+    function getWeather(float $lat = null, float $lon = null, int $days = 2){
         if($lat === null || $lon === null){
             $this->manageResponse();
         }
-        // define url
-        $apiKey = $this->params->get('app.api_weather_key');
-        $apiBaseUrl = $this->params->get('app.api_weather_url');
 
         $queryFields = [
             'q' => number_format($lat,3,'.','') . ',' . number_format($lon,3,'.',''),
-            'key' => $apiKey,
+            'key' => $this->apiKey,
             'days' => $days
         ];
-        $urlRequest = $apiBaseUrl . '?' . http_build_query($queryFields);
+        $urlRequest = $this->apiBaseUrl . '?' . http_build_query($queryFields);
 
         $client = HttpClient::create();
         $response = $client->request('GET', $urlRequest);
 
-        return $this->manageResponse($response);
+        return  $response instanceof ResponseInterface ? $this->manageResponse($response) : $this->manageResponse();
     }
 
     /**
      * 
      */
-    private function manageResponse(object $response = null): array
+    public function manageResponse(ResponseInterface $response = null): array
     {
-        if($response === null || $response->getStatusCode() !== 200){
+        if(empty($response) || $response->getStatusCode() !== 200){
             $weather = [
                 "today" => 'not available',
                 "tomorrow" => 'not available',
             ];
         } else {
             $content = $response->toArray();
-
-                $weather = [
-                    "today" => self::getWeatherText($content, 'today'),
-                    "tomorrow" => self::getWeatherText($content, 'tomorrow')
-                ];
+            $weather = [
+                "today" => is_array($content) ? self::getWeatherText($content, 'today') : 'not available',
+                "tomorrow" => is_array($content) ? self::getWeatherText($content, 'tomorrow') : 'not available'
+            ];
         }
         return $weather;
     }
@@ -63,18 +63,18 @@ class WeatherService
      * @param array $content - api weather response payload
      * @param string @when - {'today'|'tomorrow'} 
      */
-    private function getWeatherText(array $content = [], string $when): string
+    public function getWeatherText(array $content = [], string $when): string
     {
         $weather = 'not available';
-        if(count($content['forecast']['forecastday']) === 2){
+        $forecastDay = !empty($content['forecast']['forecastday']) ? $content['forecast']['forecastday'] : [];
+        if( count($forecastDay) >= 2 ){
             if($when === 'today'){
-                $weather = !empty($content['forecast']['forecastday'][0]['day']['condition']['text']) ? $content['forecast']['forecastday'][0]['day']['condition']['text']  : 'not available';
+                $weather = !empty($forecastDay[0]['day']['condition']['text']) ? $forecastDay[0]['day']['condition']['text']  : 'not available';
             } else {
-                $weather = !empty($content['forecast']['forecastday'][1]['day']['condition']['text']) ? $content['forecast']['forecastday'][1]['day']['condition']['text']  : 'not available';
+                $weather = !empty($forecastDay[1]['day']['condition']['text']) ? $forecastDay[1]['day']['condition']['text']  : 'not available';
             }
-            return $weather;
         } 
-        
+        return $weather;
     }
 }
 

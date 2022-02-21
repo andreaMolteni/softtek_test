@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class MusementService
 {
@@ -31,18 +32,18 @@ class MusementService
             ],
         ]);
 
-        return self::manageResponse($response);
+        return $response instanceof ResponseInterface ? $this->manageResponse($response) : $this->manageResponse();
         
     }
 
     /**
      * It manages the end point response. If the code is 200 then it returns the cities list
-     * @param object $response 
+     * @param ResponseInterface $response 
      * @return array arrayKeys: [statusCode, message, citiesLilst [name, lat, lon]]
      */
-    private function manageResponse(object $response = null): array
+    private function manageResponse(ResponseInterface $response = null): array
     {
-        switch($response->getStatusCode()){
+        switch(empty($response) || $response->getStatusCode()){
             case 200:
                 $content = $response->toArray();
                 $citiesList = array_map(function($element){
