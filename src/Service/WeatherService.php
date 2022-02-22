@@ -2,28 +2,41 @@
 
 namespace App\Service;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBag;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+/**
+ * WeatherService - Verion 1.0 (PHP Version 7.4.9):
+ * This class get an array containing the list of the cities where TUI Musement has activities to sell
+ * @note in case of some error return an empty array
+ * 
+ * @author Andrea Molteni - molteni.engineer@gmail.com
+ */
 class WeatherService
 {
 
-    private $params;
-    public $apiKey;
-    public $apiBaseUrl;
+    private ContainerBagInterface $params;
+    public string $apiKey;
+    public string $apiBaseUrl;
 
     public function __construct(ContainerBagInterface $params)
     {
         $this->params = $params;
-        $this->apiKey = $this->params->get('app.api_weather_key');
-        $this->apiBaseUrl = $this->params->get('app.api_weather_url');
+        $this->apiKey = is_string($this->params->get('app.api_weather_key')) ? $this->params->get('app.api_weather_key') :  '';
+        $this->apiBaseUrl = is_string($this->params->get('app.api_weather_url')) ? $this->params->get('app.api_weather_url') : '';
     }
 
-    function getWeather(float $lat = null, float $lon = null, int $days = 2){
+    /**
+     * @param float $lat - latitude
+     * @param float $lon - longitude
+     * @param int $days - number of forecast days
+     * @return array<mixed> - response array with keys: 'today' and 'tomorrow'
+     */
+    function getWeather(float $lat = null, float $lon = null, int $days = 2): array
+    {
         if($lat === null || $lon === null){
-            $this->manageResponse();
+            return $this->manageResponse();
         }
 
         $queryFields = [
@@ -36,11 +49,12 @@ class WeatherService
         $client = HttpClient::create();
         $response = $client->request('GET', $urlRequest);
 
-        return  $response instanceof ResponseInterface ? $this->manageResponse($response) : $this->manageResponse();
+        return  $this->manageResponse($response);
     }
 
     /**
-     * 
+     * @param ResponseInterface $response - endpoint response
+     * @return array{'today': string, 'tomorrow': string} - repsonse array with keys: 'today' and 'tomorrow'
      */
     public function manageResponse(ResponseInterface $response = null): array
     {
@@ -52,22 +66,23 @@ class WeatherService
         } else {
             $content = $response->toArray();
             $weather = [
-                "today" => is_array($content) ? self::getWeatherText($content, 'today') : 'not available',
-                "tomorrow" => is_array($content) ? self::getWeatherText($content, 'tomorrow') : 'not available'
+                "today" => self::getWeatherText($content, 'today'),
+                "tomorrow" => self::getWeatherText($content, 'tomorrow')
             ];
         }
         return $weather;
     }
 
     /**
-     * @param array $content - api weather response payload
-     * @param string @when - {'today'|'tomorrow'} 
+     * @param array<mixed> $content - api weather response payload
+     * @param 'today'|'tomorrow' $when 
+     * @return string weather text description or string 'not availble' 
      */
     public function getWeatherText(array $content = [], string $when): string
     {
         $weather = 'not available';
         $forecastDay = !empty($content['forecast']['forecastday']) ? $content['forecast']['forecastday'] : [];
-        if( count($forecastDay) >= 2 ){
+        if( is_array($forecastDay) && count($forecastDay) >= 2 ){
             if($when === 'today'){
                 $weather = !empty($forecastDay[0]['day']['condition']['text']) ? $forecastDay[0]['day']['condition']['text']  : 'not available';
             } else {

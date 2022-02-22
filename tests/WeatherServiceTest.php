@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Service;
+namespace App\Tests;
 
 use App\Service\WeatherService;
 use stdClass;
