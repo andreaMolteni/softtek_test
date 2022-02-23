@@ -42,14 +42,14 @@ class MusementService
                 'Accept-Language' => 'en-US'
             ],
         ]);
-
+        die(print_r($this->url));
         return $this->manageResponse($response);    
     }
 
     /**
      * It manages the end point response. If the code is 200 then it returns the cities list
      * @param ResponseInterface $response
-     * @return array<mixed> - arrayKeys: [statusCode, message, citiesLilst [name, lat, lon]]
+     * @return array<mixed> - arrayKeys: [statusCode, message, citiesLilst []|[name, lat, lon]]
      */
     private function manageResponse(ResponseInterface $response ): array
     {

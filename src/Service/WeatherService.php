@@ -36,9 +36,10 @@ class WeatherService
     function getWeather(float $lat = null, float $lon = null, int $days = 2): array
     {
         if($lat === null || $lon === null){
-            return $this->manageResponse();
+            return $this->manageResponse(); //no coordinates -> forecast not available
         }
 
+        // build request url
         $queryFields = [
             'q' => number_format($lat,3,'.','') . ',' . number_format($lon,3,'.',''),
             'key' => $this->apiKey,
@@ -83,11 +84,8 @@ class WeatherService
         $weather = 'not available';
         $forecastDay = !empty($content['forecast']['forecastday']) ? $content['forecast']['forecastday'] : [];
         if( is_array($forecastDay) && count($forecastDay) >= 2 ){
-            if($when === 'today'){
-                $weather = !empty($forecastDay[0]['day']['condition']['text']) ? $forecastDay[0]['day']['condition']['text']  : 'not available';
-            } else {
-                $weather = !empty($forecastDay[1]['day']['condition']['text']) ? $forecastDay[1]['day']['condition']['text']  : 'not available';
-            }
+            $index = $when === 'today' ? 0 : 1;
+            $weather = !empty($forecastDay[$index]['day']['condition']['text']) ? $forecastDay[$index]['day']['condition']['text']  : 'not available';
         } 
         return $weather;
     }
