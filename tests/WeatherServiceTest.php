@@ -6,6 +6,12 @@ use stdClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+/**
+ * MusementServiceTest - Verion 1.0 (PHP Version 7.4.9):
+ * This class allows you to test for the WeatherService class methods
+ * 
+ * @author Andrea Molteni - molteni.engineer@gmail.com
+ */
 class WeatherServiceTest extends KernelTestCase
 {
     /**

@@ -4,6 +4,12 @@ namespace App\Tests;
 use App\Service\MusementService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * MusementServiceTest - Verion 1.0 (PHP Version 7.4.9):
+ * This class allows you to test for the MusementService class methods
+ * 
+ * @author Andrea Molteni - molteni.engineer@gmail.com
+ */
 class MusementServiceTest extends KernelTestCase
 {
     /**

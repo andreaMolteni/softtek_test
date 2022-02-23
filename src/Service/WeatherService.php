@@ -31,7 +31,7 @@ class WeatherService
      * @param float $lat - latitude
      * @param float $lon - longitude
      * @param int $days - number of forecast days
-     * @return array<mixed> - response array on forcast taxt for each days
+     * @return array<string> - response array on forcast taxt for each days
      */
     function getWeather(float $lat = null, float $lon = null, int $days = 2): array
     {

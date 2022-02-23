@@ -58,17 +58,22 @@ class GetCitiesWeather extends Command
                 !empty($response['message']) ? $response['message'] : 'Error',
             ]);
             return Command::FAILURE;
-        } else {
-            $citiesList = $response['citiesList'];
-        }
-
-        array_map(function(array $element) use ($output):void
+        } 
+            
+        $citiesList = $response['citiesList'];
+        if (is_array($citiesList)){
+            array_map( function(array $element) use ($output):void
             {
                 $weather = $this->weatherService->getWeather((float)$element['lat'], (float)$element['lon'], 2);
                 $output->writeln([
                     'Processed city ' . $element['name'] . ' | ' . $weather[0] . ' - ' . $weather[1],
                 ]);
             }, $citiesList );
+        } else {
+            $output->writeln([
+                'Not Cities Found',
+            ]);
+        }
         
         return Command::SUCCESS;
 
