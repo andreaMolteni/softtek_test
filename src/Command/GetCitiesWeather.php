@@ -66,7 +66,7 @@ class GetCitiesWeather extends Command
             {
                 $weather = $this->weatherService->getWeather((float)$element['lat'], (float)$element['lon'], 2);
                 $output->writeln([
-                    'Processed city ' . $element['name'] . ' | ' . $weather['today'] . ' - ' . $weather['tomorrow'],
+                    'Processed city ' . $element['name'] . ' | ' . $weather[0] . ' - ' . $weather[1],
                 ]);
             }, $citiesList );
         

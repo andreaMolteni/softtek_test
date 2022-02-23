@@ -31,12 +31,12 @@ class WeatherService
      * @param float $lat - latitude
      * @param float $lon - longitude
      * @param int $days - number of forecast days
-     * @return array<mixed> - response array with keys: 'today' and 'tomorrow'
+     * @return array<mixed> - response array on forcast taxt for each days
      */
     function getWeather(float $lat = null, float $lon = null, int $days = 2): array
     {
         if($lat === null || $lon === null){
-            return $this->manageResponse(); //no coordinates -> forecast not available
+            return $this->manageResponse(null, $days); //no coordinates -> forecast not available
         }
 
         // build request url
@@ -50,42 +50,38 @@ class WeatherService
         $client = HttpClient::create();
         $response = $client->request('GET', $urlRequest);
 
-        return  $this->manageResponse($response);
+        return  $this->manageResponse($response, $days);
     }
 
     /**
      * @param ResponseInterface $response - endpoint response
-     * @return array{'today': string, 'tomorrow': string} - repsonse array with keys: 'today' and 'tomorrow'
+     * @param int $days - forecast number days
+     * @return array<string> - repsonse array with with the forecast fo each days
      */
-    public function manageResponse(ResponseInterface $response = null): array
+    public function manageResponse(ResponseInterface $response = null, int $days = 0): array
     {
-        if(empty($response) || $response->getStatusCode() !== 200){
-            $weather = [
-                "today" => 'not available',
-                "tomorrow" => 'not available',
-            ];
-        } else {
+        $weather = array_fill(0, $days, 'not available') ;
+        if(!empty($response) && $response->getStatusCode() === 200)
+        {
             $content = $response->toArray();
-            $weather = [
-                "today" => self::getWeatherText($content, 'today'),
-                "tomorrow" => self::getWeatherText($content, 'tomorrow')
-            ];
+            for ($i=0; $i < $days; $i++){ 
+                $weather[$i] = self::getWeatherText($content, $i);
+            }
         }
         return $weather;
     }
 
     /**
      * @param array<mixed> $content - api weather response payload
-     * @param 'today'|'tomorrow' $when 
+     * @param int $when 
      * @return string weather text description or string 'not availble' 
      */
-    public function getWeatherText(array $content = [], string $when): string
+    public function getWeatherText(array $content = [], int $when): string
     {
         $weather = 'not available';
         $forecastDay = !empty($content['forecast']['forecastday']) ? $content['forecast']['forecastday'] : [];
-        if( is_array($forecastDay) && count($forecastDay) >= 2 ){
-            $index = $when === 'today' ? 0 : 1;
-            $weather = !empty($forecastDay[$index]['day']['condition']['text']) ? $forecastDay[$index]['day']['condition']['text']  : 'not available';
+        if( is_array($forecastDay) && count($forecastDay) >= $when ){
+            $weather = !empty($forecastDay[$when]['day']['condition']['text']) ? $forecastDay[$when]['day']['condition']['text']  : 'not available';
         } 
         return $weather;
     }

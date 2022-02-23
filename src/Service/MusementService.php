@@ -42,7 +42,7 @@ class MusementService
                 'Accept-Language' => 'en-US'
             ],
         ]);
-        die(print_r($this->url));
+        
         return $this->manageResponse($response);    
     }
 
