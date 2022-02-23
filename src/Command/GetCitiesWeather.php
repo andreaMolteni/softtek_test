@@ -69,13 +69,13 @@ class GetCitiesWeather extends Command
                     'Processed city ' . $element['name'] . ' | ' . $weather[0] . ' - ' . $weather[1],
                 ]);
             }, $citiesList );
+            return Command::SUCCESS;
         } else {
             $output->writeln([
                 'Not Cities Found',
             ]);
+            return Command::FAILURE;
         }
-        
-        return Command::SUCCESS;
 
     }
 }
