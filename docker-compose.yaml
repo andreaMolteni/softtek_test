@@ -1,0 +1,8 @@
+version: '3'
+services:
+  # PHP ambient with synfony 5 skeleton
+  php:
+      build: .docker/php
+      container_name: sf5_php
+      volumes:
+        - .:/home/wwwroot/sf5

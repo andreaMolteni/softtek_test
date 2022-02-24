@@ -33,7 +33,7 @@ class WeatherService
      * @param int $days - number of forecast days
      * @return array<string> - response array on forcast taxt for each days
      */
-    function getWeather(float $lat = null, float $lon = null, int $days = 2): array
+    public function getWeather(float $lat = null, float $lon = null, int $days = 2): array
     {
         if($lat === null || $lon === null){
             return $this->manageResponse(null, $days); //no coordinates -> forecast not available

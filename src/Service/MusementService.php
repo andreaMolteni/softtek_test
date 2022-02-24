@@ -6,7 +6,6 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-
 /**
  * MusementService - Verion 1.0 (PHP Version 7.4.9):
  * This class get the forecast for the next 2 days from the geographic coordinates
@@ -33,7 +32,7 @@ class MusementService
      * It returns an array response from musement api containing status code, message and cities list 
      * @return array<mixed> response array must contain keys: 'statusCode', 'message' and 'citiesList'
      */
-    function getCities(): array
+    public function getCities(): array
     {
         $client = HttpClient::create();
         $response = $client->request('GET', $this->url,[
@@ -42,8 +41,8 @@ class MusementService
                 'Accept-Language' => 'en-US'
             ],
         ]);
-        
-        return $this->manageResponse($response);    
+
+        return $this->manageResponse($response);
     }
 
     /**
