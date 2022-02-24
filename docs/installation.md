@@ -10,7 +10,7 @@ To use cli command you need to install globally PHP version 7.4 and **composer**
 - composer -v
 
 ### necessary commands
-To use the script you need to run this command:
+To use the script you need to run this command in the project folder:
 - composer install 
 
 ## Ambient configuration with Docker:
@@ -28,5 +28,7 @@ Composer install
 
 Well done!! Everything is ready to run the script
  ([userguide](userguides.md))
+
+ [Docs summary](../README.md)
 
 

@@ -60,14 +60,15 @@ If in the response array there isn’t the data, it returns “not avalaible”
 For the static code analysis PHPStan library has been used.
 
 ### **TESTING**
-Concerning the testing, three classes have been developed. The first one performs the test of cli command behaviour, the second one is for MusementService and the last one for WeatherService.
+Concerning the testing, three classes have been developed. The first one performs the test of cli command behaviour, the second one is for MusementService and the last one for WeatherService. <br>
+**For each test there are several asserts.**
+
+### getCitiesWeatherCommandTest
+- tests getCitiesWeatherCommand behaviour
 
 ### MusementServiceTest
 - tests MusemenService in normal conditions. <br>
-It 
 - tests MusemenService in case of the response in not 200
-
-For each test there are several asserts.
 
 ### WeathertServiceTest:
 - tests WeatherService without input <br>
@@ -79,8 +80,8 @@ For each test there are several asserts.
 - tests WeatherService with no response <br>
 - It tests GetWeatherText with empty array <br>
 
-For each test there are several asserts.
 
+[Docs summary](../README.md)
 
 
 

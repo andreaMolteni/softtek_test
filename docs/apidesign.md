@@ -9,14 +9,14 @@ The requests can be:
 - What will it be the weather in [city] tomorrow ?
 - What was the weather in [city] on [day] ?
 
-## Descrizione dei path
-Le rotte per i servizi richiesti devo essere i seguenti:
+## Path description
+The paths that carry out the requests must be the following:
 - /cities/{cityId}/weather/today
 - /cities/{cityId}/weather/tomorrow
 - /cities/{cityId}/weather/{day}
 
 ### **HTTP request methods**
-the verb **GET** must be used to make the requests . There are no other methods because the service is only to recover information.
+The verb **GET** must be used to make the requests . There are no other methods because the service is only to recover information.
 
 ### **Parameters**:
 - ### {Version}
@@ -52,8 +52,8 @@ the verb **GET** must be used to make the requests . There are no other methods 
        format: "date"<br>
     },
 
-### **responses**
-Il ormato della risposta per le tre richieste è identica. Di seguito la descrizione
+### **Responses**
+The response format for the three requests is the same.. Their description follows
 - 200: <br>
     description: Returned when successful<br>
     content:<br>
@@ -82,9 +82,10 @@ Il ormato della risposta per le tre richieste è identica. Di seguito la descriz
     description: Service unavailable
 
 ## note sull'implementazione
-1. Le api devono prevedere un controllo del HTTP request methods
-2. The api must predict a control of http request method
-3. if the parameters related to version and language are in the header, they must be read. otherwise, the default language is 'EN-US'
-4. the api must implement all the described response types with the relating codes
+1. The api must predict a control of http request method
+2. if the parameters related to version and language are in the header, they must be read. otherwise, the default language is 'EN-US'
+3. the api must implement all the described response types with the relating codes
 
 ## **For more details open the open the [json specs swagger](cities-weather-swagger.json)**
+
+[Docs summary](../README.md)

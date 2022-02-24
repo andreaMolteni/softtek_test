@@ -19,9 +19,11 @@ To perform all tests run:
 
 
 To perform the tests for single class run:
-- vendor/bin/phpunit tests/ getCitiesWeatherCommandTest.php
-- vendor/bin/phpunit tests/MusementServiceTest.php
-- vendor/bin/phpunit tests/WeatherServiceTest.php
+- **vendor/bin/phpunit tests/ getCitiesWeatherCommandTest.php**
+- **vendor/bin/phpunit tests/MusementServiceTest.php**
+- **vendor/bin/phpunit tests/WeatherServiceTest.php**
+
+[Docs summary](../README.md)
 
 
 
