@@ -53,28 +53,39 @@ class GetCitiesWeather extends Command
     {
         $response = $this->musementService->getCities();
 
+        // the service is unavailable
         if(!empty($response['statusCode']) && $response['statusCode'] !== 200){
             $output->writeln([
-                !empty($response['message']) ? $response['message'] : 'Error',
+                !empty($response['message']) ? $response['message'] : 'The service is unavailable',
             ]);
             return Command::FAILURE;
         } 
             
-        $citiesList = $response['citiesList'];
-        if (is_array($citiesList)){
-            array_map( function(array $element) use ($output):void
-            {
-                $weather = $this->weatherService->getWeather((float)$element['lat'], (float)$element['lon'], 2);
-                $output->writeln([
-                    'Processed city ' . $element['name'] . ' | ' . $weather[0] . ' - ' . $weather[1],
-                ]);
-            }, $citiesList );
-            return Command::SUCCESS;
-        } else {
+        $citiesList = !empty($response['message']) ? $response['citiesList'] : null;
+        
+        if (!is_array($citiesList)){
+            // response in wrong format
             $output->writeln([
                 'Not Cities Found',
             ]);
             return Command::FAILURE;
+        } else {
+            // response in right format
+            array_map( function(array $element) use ($output):void
+            {
+                $lat = !empty($element['lat']) ? (float)$element['lat'] : null; 
+                $lon = !empty($element['lon']) ? (float)$element['lon'] : null;
+                $name = !empty($element['name']) ? $element['name'] : '';
+
+                $weather = $this->weatherService->getWeather($lat, $lon, 2);
+                
+                $today = !empty($weather[0]) ? $weather[0] : 'not available';
+                $tomorrow = !empty($weather[1]) ? $weather[1] : 'not available';
+                $output->writeln([
+                    'Processed city ' . $name . ' | ' . $today . ' - ' . $tomorrow,
+                ]);
+            }, $citiesList );
+            return Command::SUCCESS;
         }
 
     }

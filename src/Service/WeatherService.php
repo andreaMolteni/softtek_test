@@ -48,7 +48,12 @@ class WeatherService
         $urlRequest = $this->apiBaseUrl . '?' . http_build_query($queryFields);
 
         $client = HttpClient::create();
-        $response = $client->request('GET', $urlRequest);
+        $response = $client->request('GET', $urlRequest,[
+            'headers' => [
+                'Accept' => 'application/json',
+                'Accept-Language' => 'en-US'
+            ],
+        ]);
 
         return  $this->manageResponse($response, $days);
     }

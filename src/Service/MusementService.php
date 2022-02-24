@@ -34,6 +34,7 @@ class MusementService
      */
     public function getCities(): array
     {
+        // build request url
         $client = HttpClient::create();
         $response = $client->request('GET', $this->url,[
             'headers' => [
