@@ -51,8 +51,8 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
         }
     }
 
@@ -76,8 +76,8 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
         }
     }
     
@@ -100,9 +100,91 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
-            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $days . ' the value is not empty');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
+            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
+        }
+    }
+
+    /**
+     * It tests WeatherService passing more than 2 days
+     */
+    public function testWeatherServiceMoreDays(): void
+    {
+        // (1) boot the Symfony kernel
+        self::bootKernel();
+
+        // (2) use static::getContainer() to access the service container
+        $container = static::getContainer();
+
+        // (3) run some service & test the result
+        $WeatherService = $container->get(WeatherService::class);
+        $days = 3;
+        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+
+        $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
+        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
+        for ($i=0; $i < $days; $i++) { 
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
+            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
+        }
+    }
+
+    /**
+     * It tests WeatherService passing less than 2 days
+     */
+    public function testWeatherServiceLessDays(): void
+    {
+        // (1) boot the Symfony kernel
+        self::bootKernel();
+
+        // (2) use static::getContainer() to access the service container
+        $container = static::getContainer();
+
+        // (3) run some service & test the result
+        $WeatherService = $container->get(WeatherService::class);
+        $days = 1;
+        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+
+        $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
+        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
+        for ($i=0; $i < $days; $i++) { 
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
+            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
+        }
+    }
+
+
+    /**
+     * It tests WeatherService passing less than 3 days
+     */
+    public function testWeatherServiceTooManyDays(): void
+    {
+        // (1) boot the Symfony kernel
+        self::bootKernel();
+
+        // (2) use static::getContainer() to access the service container
+        $container = static::getContainer();
+
+        // (3) run some service & test the result
+        $WeatherService = $container->get(WeatherService::class);
+        $days = 10;
+        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+
+        $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
+        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
+        for ($i=0; $i < $days; $i++) { 
+            if ($i < 3){
+                $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+                $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
+                $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
+            } else {
+                $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+                $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
+            }
+            
         }
     }
 
@@ -126,8 +208,8 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
         }
     }
 
@@ -151,8 +233,8 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
         }
     }
 
@@ -176,8 +258,8 @@ class WeatherServiceTest extends KernelTestCase
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
         $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
         for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $days . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $days . ' the value is = "not available"');
+            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
+            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
         }
     }
 
