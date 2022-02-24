@@ -1,0 +1,328 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Musement API",
+    "description": "Musement API",
+    "contact": {
+      "email": "support@musement.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "3.5.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/xxx487/musementCitiesWeather/1.0.0"
+    }
+  ],
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/cities/{cityId}/weather/today": {
+      "get": {
+        "tags": [
+          "city"
+        ],
+        "summary": "the weather today",
+        "operationId": "GetCitiesCityWeatherToday",
+        "parameters": [
+          {
+            "name": "X-Musement-Version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "en-US"
+            }
+          },
+          {
+            "name": "cityId",
+            "in": "path",
+            "description": "City identifier",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "404": {
+            "description": "Returned when resource is not found"
+          },
+          "503": {
+            "description": "Returned when the service is unavailable"
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/weather/tomorrow": {
+      "get": {
+        "tags": [
+          "city"
+        ],
+        "summary": "the weather tomorrow",
+        "operationId": "GetCitiesCityWeatherTomorrow",
+        "parameters": [
+          {
+            "name": "X-Musement-Version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "en-US"
+            }
+          },
+          {
+            "name": "cityId",
+            "in": "path",
+            "description": "City identifier",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "404": {
+            "description": "Returned when resource is not found"
+          },
+          "503": {
+            "description": "Returned when the service is unavailable"
+          }
+        }
+      }
+    },
+    "/cities/{cityId}/weather/{day}": {
+      "get": {
+        "tags": [
+          "city"
+        ],
+        "summary": "the weather tomorrow",
+        "operationId": "GetCitiesCityWeatherADay",
+        "parameters": [
+          {
+            "name": "X-Musement-Version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "en-US"
+            }
+          },
+          {
+            "name": "cityId",
+            "in": "path",
+            "description": "City identifier",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "day",
+            "in": "path",
+            "description": "Day",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "404": {
+            "description": "Returned when resource is not found"
+          },
+          "503": {
+            "description": "Returned when the service is unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WeatherItem": {
+        "type": "object",
+        "properties": {
+          "temp_c": {
+            "type": "number",
+            "description": "Temperature in celsius"
+          },
+          "temp_f": {
+            "type": "number",
+            "description": "Temperature in fahrenheit"
+          },
+          "condition_text": {
+            "type": "string",
+            "description": "Weather condition text"
+          },
+          "condition_icon": {
+            "type": "string",
+            "description": "Weather icon url"
+          },
+          "condition_code": {
+            "type": "integer",
+            "description": "Weather condition unique code"
+          },
+          "wind_mph": {
+            "type": "number",
+            "description": "Wind speed in miles per hour"
+          },
+          "wind_kph": {
+            "type": "number",
+            "description": "Wind speed in kilometer per hour"
+          },
+          "wind_degree": {
+            "type": "integer",
+            "description": "Wind direction in degrees"
+          },
+          "wind_dir": {
+            "type": "string",
+            "description": "Wind direction as sixty point compass",
+            "example": "NSW"
+          },
+          "pressure_mb": {
+            "type": "number",
+            "description": "Pressure in millibars"
+          },
+          "pressure_in": {
+            "type": "number",
+            "description": "Pressure in inches"
+          },
+          "precip_mm": {
+            "type": "number",
+            "description": "Precipitation amount in millimeters"
+          },
+          "humidity": {
+            "type": "integer",
+            "description": "Humidity as percentag"
+          },
+          "cloud": {
+            "type": "integer",
+            "description": "Cloud cover as percentage"
+          },
+          "gust_mph": {
+            "type": "number",
+            "description": "Wind gust in miles per hour"
+          },
+          "gust_kph": {
+            "type": "number",
+            "description": "Wind gust in kilometer per hour"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "Accept-Language": {
+        "name": "Accept-Language",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "en-US"
+        }
+      },
+      "X-Musement-Version": {
+        "name": "X-Musement-Version",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "cityId": {
+        "name": "cityId",
+        "in": "path",
+        "description": "City identifier",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "day": {
+        "name": "day",
+        "in": "path",
+        "description": "date in the format YYYY-MM-DD - it must not exceed the current day of 3 days",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}
