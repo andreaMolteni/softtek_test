@@ -8,11 +8,12 @@ In this way I could concentrate only on the core code.
 
 ## **Classes design**
 
-### **otherview**
+### **Otherview**
 The cli command is implemented by **GetCitiesWeather** class that extends the class Command provided by symphony. This class uses two Services **MusementService** and **WeatherService**.
 MusementService makes a request to musement api and it gives back the list of all the cities where TUI Musement is active. 
 WeatherService makes requests to weather api in order to obtain the weather forecast for each city.
-I chose to separate these services in two classes in order to make their reuse possible, and to test the services more easily 
+I chose to separate these services in two classes in order to make their reuse possible, and to test the services more easily.
+The source code is in [src folder](../src/). [Here](../tests/) the tests folder.
 
 ### **MusementService**
 This class has these methods:
