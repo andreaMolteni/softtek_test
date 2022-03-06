@@ -1,287 +1,237 @@
 <?php
+
 namespace App\Tests;
 
 use App\Service\WeatherService;
-use stdClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 /**
  * MusementServiceTest - Verion 1.0 (PHP Version 7.4.9):
- * This class allows you to test for the WeatherService class methods
- * 
+ * This class allows you to test for the WeatherService class methods.
+ *
  * @author Andrea Molteni - molteni.engineer@gmail.com
  */
 class WeatherServiceTest extends KernelTestCase
 {
+    private ContainerInterface $testContainer;
+
+    protected function setUp(): void
+    {
+        // boot the Symfony kernel
+        self::bootKernel();
+        // use static::getContainer() to access the service container
+        $this->testContainer = static::getContainer();
+    }
+
     /**
-     * It tests WeatherService without input
+     * It tests WeatherService without input.
      */
     public function testWeatherServiceNoInput(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        $weather = $WeatherService->getWeather();
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
+        $days = 2;
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather();
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
 
     /**
-     * It tests WeatherService with null coordinates
+     * It tests WeatherService with null coordinates.
      */
     public function testWeatherServiceInputNull(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
         $days = 2;
-        $weather = $WeatherService->getWeather(null, null, $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(null, null, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
 
     /**
-     * It tests WeatherService with bad coordinates
+     * It tests WeatherService with bad coordinates.
      */
     public function testWeatherServiceBadInput(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
 
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        
         $days = 2;
-        $weather = $WeatherService->getWeather((float)'bfsdfhsf', (float)'gasksjdhf', $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather((float) 'bfsdfhsf', (float) 'gasksjdhf', $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
-    
+
     /**
-     * It tests WeatherService in normal conditions
+     * It tests WeatherService in normal conditions.
      */
     public function testWeatherServiceNormal(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
         $days = 2;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertNotContains('not available', $weather, "'weather' array not contains 'not available'");
     }
 
     /**
-     * It tests WeatherService passing more than 2 days
+     * It tests WeatherService passing more than 2 days.
      */
     public function testWeatherServiceMoreDays(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
         $days = 3;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertNotContains('not available', $weather, "'weather' array not contains 'not available'");
     }
 
     /**
-     * It tests WeatherService passing less than 2 days
+     * It tests WeatherService passing less than 2 days.
      */
     public function testWeatherServiceLessDays(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
         $days = 1;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-            $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertNotContains('not available', $weather, "'weather' array not contains 'not available'");
     }
 
-
     /**
-     * It tests WeatherService passing less than 3 days
+     * It tests WeatherService passing less than 3 days.
      */
     public function testWeatherServiceTooManyDays(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
+        // mocking response
+        $WeatherService = $this->testContainer->get(WeatherService::class);
         $days = 10;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) >= $days, 'WeatherService: the response is an array with length > ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            if ($i < 3){
-                $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-                $this->assertTrue($weather[$i] !== 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-                $this->assertTrue($weather[$i] !== '', 'WeatherService:  in the response key ' . $i . ' the value is not empty');
-            } else {
-                $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-                $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-            }
-            
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
 
     /**
-     * It tests WeatherService with bad url
+     * It tests WeatherService with bad request.
      */
     public function testWeatherServiceBadUrl(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        $WeatherService->apiBaseUrl = 'http://api.weatherapi.com/v1/gshadfhforecast.json/fhasdòkbljn';
+        // mocking response
         $days = 2;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        $response = new MockResponse('test', [
+            'http_code' => 400,
+        ]);
+        $this->testContainer->set('test.Symfony\Contracts\HttpClient\HttpClientInterface', new MockHttpClient($response));
+        $WeatherService = $this->testContainer->get(WeatherService::class);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-        }
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
 
     /**
-     * It tests WeatherService with bad key
+     * It tests WeatherService in case of failure.
      */
-    public function testWeatherServiceBadKey(): void
+    public function testWeatherServiceFailure(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        $WeatherService->apiKey = '097c03a6f4de5643i6uh02038222002';
+        // mocking response
         $days = 2;
-        $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        $body = function () {
+            yield 'simulating';
+            // empty strings are turned into timeouts so that they are easy to test
+            yield '';
+            yield 'server failure';
+        };
+        $response = new MockResponse($body());
+        $this->testContainer->set('test.Symfony\Contracts\HttpClient\HttpClientInterface', new MockHttpClient($response));
+        $WeatherService = $this->testContainer->get(WeatherService::class);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-        }
+        $this->assertCount(0, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertEmpty($weather, "'weather' array contains 'not available'");
     }
 
     /**
-     * It tests WeatherService with no response
+     * It tests WeatherService in case it responses with a bad array.
      */
-    public function testWeatherManagePassingEmptyObject(): void
+    public function testWeatherServiceBadResponse(): void
     {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        $response= new stdClass();
+        // mocking response
         $days = 2;
-        $weather = $response instanceof ResponseInterface ? $WeatherService->manageResponse($response, $days) : $WeatherService->manageResponse(null, $days);
+        $res = json_encode(['badResponse' => ['test']]);
+        if (!$res) {
+            $res = 'test';
+        }
+        $response = new MockResponse($res);
+        $this->testContainer->set('test.Symfony\Contracts\HttpClient\HttpClientInterface', new MockHttpClient($response));
+        $WeatherService = $this->testContainer->get(WeatherService::class);
+        if (is_object($WeatherService) && method_exists($WeatherService, 'getWeather')) {
+            $weather = $WeatherService->getWeather(48.138, 32.00, $days);
+        } else {
+            $weather = [];
+        }
 
         $this->assertTrue(is_array($weather), 'WeatherService: the response is an array');
-        $this->assertTrue(count($weather) === $days, 'WeatherService: the response is an array with length = ' . $days);
-        for ($i=0; $i < $days; $i++) { 
-            $this->assertTrue(isset($weather[$i]), 'WeatherService: there is the key ' . $i . 'in the response');
-            $this->assertTrue($weather[$i] === 'not available', 'WeatherService: in the response key ' . $i . ' the value is = "not available"');
-        }
-    }
-
-    /**
-     * It tests GetWeatherText with empty array
-     */
-    public function testGetWeatherTextPassingEmptyArray(): void
-    {
-        // (1) boot the Symfony kernel
-        self::bootKernel();
-
-        // (2) use static::getContainer() to access the service container
-        $container = static::getContainer();
-
-        // (3) run some service & test the result
-        $WeatherService = $container->get(WeatherService::class);
-        $weather = $WeatherService->getWeatherText([[],[]], 0);
-
-        $this->assertTrue(is_string($weather), 'the response is a string');
-        $this->assertTrue($weather === 'not available', 'WeatherService:  the weather is "not available"');
-        $this->assertTrue($weather === 'not available', 'WeatherService: the weather is "not available"');
+        $this->assertCount($days, $weather, 'WeatherService: the response is an array with length == '.$days);
+        $this->assertContains('not available', $weather, "'weather' array contains 'not available'");
     }
 }
-
-?>

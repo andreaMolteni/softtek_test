@@ -20,65 +20,65 @@ The verb **GET** must be used to make the requests . There are no other methods 
 
 ### **Parameters**:
 - ### {Version}
-    name: "X-Musement-Version"<br>
-    in: "header"<br>
-    required: false<br>
-    schema: {<br>
-       type: "string"<br>
-    }<br>
+    name: "X-Musement-Version"  
+    in: "header"  
+    required: false  
+    schema: {  
+       type: "string"  
+    }  
 - ### {Accept-Language}
-    name: "Accept-Language"<br>
-    in: "header"<br>
-    required: false<br>
-    schema: {<br>
-       type: "string"<br>
-       default: "en-US"<br>
-    }<br>
+    name: "Accept-Language"  
+    in: "header"  
+    required: false  
+    schema: {  
+       type: "string"  
+       default: "en-US"  
+    }  
 - ### {cityId}
-    name: "cityId"<br>
-    in: "path"<br>
-    description: "City identifier" <br>
-    required: true <br> 
-    schema: {<br> 
-       type: "integer"<br> 
+    name: "cityId"  
+    in: "path"  
+    description: "City identifier"  
+    required: true  
+    schema: {  
+       type: "integer"  
     },
 - ### {day}
-    name: "cityId"<br>
-    in: "path"<br>
-    description: "date in the format YYYY-MM-DD - it must not exceed the current day of 3 days" <br>
-    required: true <br> 
-    schema: {<br>
-       type: "string",<br>
-       format: "date"<br>
+    name: "cityId"  
+    in: "path"  
+    description: "date in the format YYYY-MM-DD - it must not exceed the current day of 3 days"  
+    required: true   
+    schema: {  
+       type: "string",  
+       format: "date"  
     },
 
 ### **Responses**
 The response format for the three requests is the same.. Their description follows
-- 200: <br>
-    description: Returned when successful<br>
-    content:<br>
-    application/json<br>
-           {field: temp_c,	type: decimal,	description: 	Temperature in celsius}<br>
-           {field: temp_f,	type: 	decimal,	description: 	Temperature in fahrenheit}<br>
-           {field: condition:text,	type: 	string,	description: 	Weather condition text}<br>
-           {field: condition:icon,	type: 	string,	description: 	Weather icon url}<br>
-           {field: condition:code,	type: 	int,	description: 	Weather condition unique code.}<br>
-           {field: wind_mph,	type: 	decimal,	description: 	Wind speed in miles per hour}<br>
-           {field: wind_kph,	type: 	decimal,	description: 	Wind speed in kilometer per hour}<br>
-           {field: wind_degree,	type: 	int,	description: 	Wind direction in degrees}<br>
-           {field: wind_dir,	type: 	string,	description: 	Wind direction as 16 point compass. e.g.: NSW}<br>
-           {field: pressure_mb,	type: 	decimal,	description: 	Pressure in millibars}<br>
-           {field: pressure_in,	type: 	decimal,	description: 	Pressure in inches}<br>
-           {field: precip_mm,	type: 	decimal,	description: 	Precipitation amount in millimeters}<br>
-           {field: humidity,	type: 	int,	description: 	Humidity as percentage}<br>
-           {field: cloud,	type: 	int,	description: 	Cloud cover as percentage}<br>
-           {field: gust_mph,	type: 	decimal,	description: 	Wind gust in miles per hour}<br>
-           {field: gust_kph,	type: 	decimal,	description: 	Wind gust in kilometer per hour}<br>
-- 400: <br>
+- 200:  
+    description: Returned when successful  
+    content:  
+    application/json  
+           {field: temp_c,	type: decimal,	description: 	Temperature in celsius}
+           {field: temp_f,	type: 	decimal,	description: 	Temperature in fahrenheit}
+           {field: condition:text,	type: 	string,	description: 	Weather condition text}
+           {field: condition:icon,	type: 	string,	description: 	Weather icon url}
+           {field: condition:code,	type: 	int,	description: 	Weather condition unique code.}
+           {field: wind_mph,	type: 	decimal,	description: 	Wind speed in miles per hour}
+           {field: wind_kph,	type: 	decimal,	description: 	Wind speed in kilometer per hour}
+           {field: wind_degree,	type: 	int,	description: 	Wind direction in degrees}
+           {field: wind_dir,	type: 	string,	description: 	Wind direction as 16 point compass. e.g.: NSW}
+           {field: pressure_mb,	type: 	decimal,	description: 	Pressure in millibars}
+           {field: pressure_in,	type: 	decimal,	description: 	Pressure in inches}
+           {field: precip_mm,	type: 	decimal,	description: 	Precipitation amount in millimeters}
+           {field: humidity,	type: 	int,	description: 	Humidity as percentage}
+           {field: cloud,	type: 	int,	description: 	Cloud cover as percentage}
+           {field: gust_mph,	type: 	decimal,	description: 	Wind gust in miles per hour}
+           {field: gust_kph,	type: 	decimal,	description: 	Wind gust in kilometer per hour}
+- 400:  
     description: Returned when bad request. 
-- 404: <br>
+- 404:  
     description: Returned when resource is not found
-- 503: <br>
+- 503:  
     description: Service unavailable
 
 ## note sull'implementazione

@@ -15,15 +15,15 @@ To use the script you need to run this command in the project folder:
 
 ## Ambient configuration with Docker:
 To configure the ambient you must run these simple commands:
-1. build the image: <br>
+1. build the image:  
 docker-compose build --no-cache
-2. run image to build the container<br>
+2. run image to build the container  
 docker-compose up -d
-3. Go into container<br>
+3. Go into container  
 docker exec -it -u dev sf5_php bash
-4. Go into the folder<br>
+4. Go into the folder  
 cd sf5
-5. Download the libraries:<br>
+5. Download the libraries:  
 Composer install
 
 Well done!! Everything is ready to run the script

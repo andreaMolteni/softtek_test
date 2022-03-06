@@ -22,23 +22,23 @@ This class has these methods:
 
 The class attributes are:
 - params
+- client
 - url
 
 The attribute url allows to get the url endpoint of the Musement api from outside to make the class independent from future changes([ view config file](../config/services.yaml)).
 I chose to manage the url throw the class attribute in order to test the class behaviour inserting wrong urls.
-The method **getCities** send a request to api musement and **responseManage** processes the api response returning an array with the list of cities.
 If the api response isn’t 200, the method returns the relative error message and the empty array of the cities. 
 The managed codes are 200, 404 and 503.
 
 ### **WeatherService**
-Questa classe ha ai seguenti metodi:
+This class has these methods:
 - getWeather
 - manageResponse
 - getWeatherText
 
-Le proprietà sono:
-$params;
+The class attributes are:
 - params
+- client
 - apiKey
 - apiBaseUrl
 
@@ -61,25 +61,25 @@ If in the response array there isn’t the data, it returns “not avalaible”
 For the static code analysis PHPStan library has been used.
 
 ### **TESTING**
-Concerning the testing, three classes have been developed. The first one performs the test of cli command behaviour, the second one is for MusementService and the last one for WeatherService. <br>
+Concerning the testing, three classes have been developed. The first one performs the test of cli command behaviour, the second one is for MusementService and the last one for WeatherService.  
 **For each test there are several asserts.**
 
 ### getCitiesWeatherCommandTest
 - tests getCitiesWeatherCommand behaviour
 
 ### MusementServiceTest
-- tests MusemenService in normal conditions. <br>
+- tests MusemenService in normal conditions.  
 - tests MusemenService in case of the response in not 200
 
 ### WeathertServiceTest:
-- tests WeatherService without input <br>
-- tests WeatherService with null coordinates <br>
-- tests WeatherService with bad coordinates <br>
-- tests WeatherService in normal conditions <br>
-- tests WeatherService with bad url <br>
-- tests WeatherService with bad key <br>
-- tests WeatherService with no response <br>
-- It tests GetWeatherText with empty array <br>
+- tests WeatherService without input  
+- tests WeatherService with null coordinates  
+- tests WeatherService with bad coordinates   
+- tests WeatherService in normal conditions  
+- tests WeatherService with bad url  
+- tests WeatherService with bad key  
+- tests WeatherService with no response  
+- It tests GetWeatherText with empty array  
 
 
 [Docs summary](../README.md)

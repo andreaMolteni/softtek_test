@@ -10,10 +10,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * GetCitiesWeather - Verion 1.0 (PHP Version 7.4.9):
- * This class implements a cli command to show a list of all musement location and the forecast for the next 2 days
+ * This class implements a cli command to show a list of all musement location and the forecast for the next 2 days.
+ *
  * @note The output is like this: "Processed city [city name] | [weather today] - [wheather tomorrow]"
- * 
- * 
+ *
  * @author Andrea Molteni - molteni.engineer@gmail.com
  */
 class GetCitiesWeather extends Command
@@ -25,7 +25,7 @@ class GetCitiesWeather extends Command
 
     /**
      * @param MusementService $MusementService - service to manage the request to musement api
-     * @param WeatherService $weatherService - service to manage the request to weather api
+     * @param WeatherService  $weatherService  - service to manage the request to weather api
      */
     public function __construct(MusementService $MusementService, WeatherService $weatherService)
     {
@@ -36,8 +36,7 @@ class GetCitiesWeather extends Command
     }
 
     /**
-     * Help command configuration
-     * @return void
+     * Help command configuration.
      */
     protected function configure(): void
     {
@@ -45,50 +44,61 @@ class GetCitiesWeather extends Command
     }
 
     /**
-     * @param InputInterface $input - to manage input
+     * @param InputInterface  $input  - to manage input
      * @param OutputInterface $output - to manage output
+     *
      * @return int - 0 -> success | 1 -> failure | 2 -> invalid
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $response = $this->musementService->getCities();
 
-        // the service is unavailable
-        if(!empty($response['statusCode']) && $response['statusCode'] !== 200){
-            $output->writeln([
-                !empty($response['message']) ? $response['message'] : 'The service is unavailable',
-            ]);
-            return Command::FAILURE;
-        } 
-            
-        $citiesList = !empty($response['message']) ? $response['citiesList'] : null;
-        
-        if (!is_array($citiesList)){
-            // response in wrong format
-            $output->writeln([
-                'Not Cities Found',
-            ]);
-            return Command::FAILURE;
-        } else {
+        if (!empty($response['citiesList']) && is_array($response['citiesList'])) {
+            $citiesList = $response['citiesList'];
             // response in right format
-            array_map( function(array $element) use ($output):void
-            {
-                $lat = !empty($element['lat']) ? (float)$element['lat'] : null; 
-                $lon = !empty($element['lon']) ? (float)$element['lon'] : null;
-                $name = !empty($element['name']) ? $element['name'] : '';
+            foreach ($citiesList as $city) {
+                // Prepare method input
+                if (!empty($city['lat'])) {
+                    $lat = $city['lat'];
+                } else {
+                    $lat = null;
+                }
+                if (!empty($city['lon'])) {
+                    $lon = $city['lon'];
+                } else {
+                    $lon = null;
+                }
+                if (!empty($city['name'])) {
+                    $name = $city['name'];
+                } else {
+                    $name = null;
+                }
 
                 $weather = $this->weatherService->getWeather($lat, $lon, 2);
-                
-                $today = !empty($weather[0]) ? $weather[0] : 'not available';
-                $tomorrow = !empty($weather[1]) ? $weather[1] : 'not available';
-                $output->writeln([
-                    'Processed city ' . $name . ' | ' . $today . ' - ' . $tomorrow,
-                ]);
-            }, $citiesList );
-            return Command::SUCCESS;
-        }
 
+                // manage service response
+                if (!empty($weather[0])) {
+                    $today = $weather[0];
+                } else {
+                    $today = 'not available';
+                }
+                if (!empty($weather[1])) {
+                    $tomorrow = $weather[1];
+                } else {
+                    $tomorrow = 'not available';
+                }
+                $output->writeln([
+                    'Processed city '.$name.' | '.$today.' - '.$tomorrow,
+                ]);
+            }
+
+            return Command::SUCCESS;
+        } else {
+            $output->writeln([
+                'The service is unavailable',
+            ]);
+
+            return Command::FAILURE;
+        }
     }
 }
-
-?>
